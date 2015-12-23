@@ -1,4 +1,7 @@
 ---
+- name: ensure UTC
+  shell: timedatectl set-timezone UTC
+
 - name: upgrade all packages
   dnf: name=* state=latest
   become: yes
