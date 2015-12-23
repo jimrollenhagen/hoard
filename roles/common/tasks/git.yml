@@ -3,6 +3,13 @@
   dnf: name=git state=latest
   become: yes
   become_method: sudo
+  when: ansible_distribution == "Fedora"
+
+- name: install git
+  apt: name=git state=latest
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
 
 - name: add git config
   template: src=gitconfig dest=/home/jim/.gitconfig

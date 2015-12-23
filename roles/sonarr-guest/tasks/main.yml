@@ -1,0 +1,5 @@
+---
+- name: Set hostname
+  hostname: name=sonarr.jroll.io
+  become: yes
+  become_method: sudo

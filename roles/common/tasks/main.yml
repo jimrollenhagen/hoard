@@ -1,21 +1,72 @@
 ---
+- name: Add jim user
+  become: yes
+  become_method: sudo
+  user:
+    name: jim
+    home: /home/jim
+
+- name: Add jim to sudoers
+  become: yes
+  become_method: sudo
+  template:
+    src: sudoers-jim
+    dest: /etc/sudoers.d/jim
+
+- name: ensure /home/jim/.ssh
+  become: yes
+  become_method: sudo
+  file:
+    path: /home/jim/.ssh
+    state: directory
+    owner: jim
+    mode: 0700
+
+- name: Add authorized keys for jim
+  become: yes
+  become_method: sudo
+  template:
+    src: authorized_keys
+    dest: /home/jim/.ssh/authorized_keys
+    owner: jim
+    mode: 0600
+
 - name: ensure UTC
+  become: yes
+  become_method: sudo
   shell: timedatectl set-timezone UTC
 
 - name: upgrade all packages
   dnf: name=* state=latest
   become: yes
   become_method: sudo
+  when: ansible_distribution == "Fedora"
+
+- name: upgrade all packages
+  apt: update_cache=yes upgrade=yes
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
 
 - name: install basic packages
   dnf: name={{ item }} state=latest
   become: yes
   become_method: sudo
+  when: ansible_distribution == "Fedora"
   with_items:
     - libselinux-python
     - vim-enhanced
     - the_silver_searcher
 
+- name: install basic packages
+  apt: name={{ item }} state=latest
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
+  with_items:
+    - vim-nox
+    - silversearcher-ag
+
+- include: git.yml
 - include: zsh.yml
 - include: tmux.yml
-- include: git.yml

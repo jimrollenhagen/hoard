@@ -1,2 +1,5 @@
 [hoard]
 hoard.jroll.io ansible_ssh_user=jim
+
+[sonarr]
+sonarr.jroll.io ansible_ssh_user=jim

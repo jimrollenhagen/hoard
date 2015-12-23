@@ -3,6 +3,13 @@
   dnf: name=tmux state=latest
   become: yes
   become_method: sudo
+  when: ansible_distribution == "Fedora"
+
+- name: install tmux
+  apt: name=tmux state=latest
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
 
 - name: add tmux config
   template: src=tmux.conf dest=/home/jim/.tmux.conf

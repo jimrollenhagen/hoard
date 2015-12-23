@@ -3,6 +3,13 @@
   dnf: name=zsh state=latest
   become: yes
   become_method: sudo
+  when: ansible_distribution == "Fedora"
+
+- name: install zsh
+  apt: name=zsh state=latest
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
 
 - name: Install oh-my-zsh
   git:
