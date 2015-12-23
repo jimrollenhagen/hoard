@@ -1,0 +1,17 @@
+---
+- name: install packages
+  dnf: name={{ item }} state=latest
+  become: yes
+  become_method: sudo
+  with_items:
+    - tunctl
+    - kvm
+    - libvirt
+    - libvirt-python
+
+- name: start libvirt
+  become: yes
+  become_method: sudo
+  service: name=libvirtd state=started enabled=yes
+
+- include: storage.yml

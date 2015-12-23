@@ -1,0 +1,8 @@
+---
+- name: install git
+  dnf: name=git state=latest
+  become: yes
+  become_method: sudo
+
+- name: add git config
+  template: src=gitconfig dest=/home/jim/.gitconfig

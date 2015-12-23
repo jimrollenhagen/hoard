@@ -1,0 +1,38 @@
+pre-ansible?
+  add ssh keys
+  sshd_config
+    root login off
+    password login off
+  dnf install python-dnf
+  hostnamectl set-hostname --static 'hoard.jroll.io'
+  set up bridged networking:
+    /etc/sysconfig/network-scripts/ifcfg-enp5s0
+      comment out BOOTPROTO
+      add BRIDGE=br0
+    /etc/sysconfig/network-scripts/ifcfg-br0
+      DEVICE=br0
+      BOOTPROTO=dhcp
+      ONBOOT=yes
+      TYPE=Bridge
+    systemctl restart network
+
+sonarr
+  mono
+  sqlite
+  transmission, utorrent, deluge, rtorrent
+  uses torrent client API
+  hardlinks files when complete
+  https://github.com/Sonarr/Sonarr/wiki
+
+couch potato
+  python
+  CodernityDB pure python, fast, NoSQL database x.x
+    maybe nothing to install though...
+  rtorrent, deluge, transmission
+  symlinks files
+  https://couchpota.to/forum/viewforum.php?f=6&sid=97322dbdc8c23ab3aee83dc65f3cdfb9
+
+headphones
+  python
+  sqlite
+  transmission, utorrent; watch dirs for other clients but less stable

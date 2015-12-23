@@ -1,0 +1,5 @@
+---
+- include: nfs.yml
+
+- name: ensure /data/hoard exists
+  file: path=/data/hoard owner=jim mode=0755 state=directory

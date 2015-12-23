@@ -1,0 +1,8 @@
+---
+- name: install tmux
+  dnf: name=tmux state=latest
+  become: yes
+  become_method: sudo
+
+- name: add tmux config
+  template: src=tmux.conf dest=/home/jim/.tmux.conf

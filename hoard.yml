@@ -1,0 +1,6 @@
+---
+- hosts: hoard
+  roles:
+    - common
+    - data
+    - vm-host

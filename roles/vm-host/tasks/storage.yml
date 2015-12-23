@@ -1,0 +1,24 @@
+---
+# assume there's already a /vm mount in fstab and on the host
+
+- name: ensure images directory exists
+  file: path=/vm/images state=directory owner=root mode=0711
+  become: yes
+  become_method: sudo
+
+- name: check if libvirt images directory is already a symlink
+  shell: readlink /var/lib/libvirt/images
+  ignore_errors: yes
+  changed_when: False
+  register: libvirt_not_symlink
+
+- name: remove libvirt images directory
+  file: path=/var/lib/libvirt/images state=absent
+  become: yes
+  become_method: sudo
+  when: "libvirt_not_symlink.rc != 0"
+
+- name: put libvirt images on /vm mount
+  file: path=/var/lib/libvirt/images state=link src=/vm/images
+  become: yes
+  become_method: sudo

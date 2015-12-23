@@ -1,0 +1,20 @@
+---
+- name: install nfs client
+  dnf: name=nfs-utils state=latest
+  become: yes
+  become_method: sudo
+
+- name: ensure /data/exists
+  file: path=/data state=directory
+  become: yes
+  become_method: sudo
+
+- name: mount /data
+  become: yes
+  become_method: sudo
+  mount:
+    name: /data
+    src: hipderp.jroll.io:/data
+    fstype: nfs
+    opts: rw,sync,nfsvers=4
+    state: mounted

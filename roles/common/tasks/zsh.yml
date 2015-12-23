@@ -1,0 +1,23 @@
+---
+- name: install zsh
+  dnf: name=zsh state=latest
+  become: yes
+  become_method: sudo
+
+- name: Install oh-my-zsh
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    dest: "/home/jim/.oh-my-zsh"
+    update: yes
+
+- name: Drop in .zshrc
+  template:
+    src: zshrc
+    dest: /home/jim/.zshrc
+
+- name: Set default shell to zsh
+  become: yes
+  become_method: sudo
+  user:
+    name: jim
+    shell: /bin/zsh
