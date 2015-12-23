@@ -8,10 +8,19 @@
     - kvm
     - libvirt
     - libvirt-python
+    - genisoimage
 
 - name: start libvirt
   become: yes
   become_method: sudo
   service: name=libvirtd state=started enabled=yes
+
+- name: add ubuntu cloud image GPG key
+  template: src=ubuntu-gpg-key.asc dest=/tmp/ubuntu-gpg-key.asc
+
+- name: import ubuntu cloud image GPG key
+  become: yes
+  become_method: sudo
+  shell: gpg --import /tmp/ubuntu-gpg-key.asc
 
 - include: storage.yml

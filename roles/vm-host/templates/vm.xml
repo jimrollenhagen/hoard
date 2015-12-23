@@ -1,0 +1,41 @@
+<domain type='kvm'>
+  <name>{{ name }}</name>
+  <memory unit='MiB'>{{ memory_mb }}</memory>
+  <vcpu>{{ cpus }}</vcpu>
+  <os>
+    <type>hvm</type>
+    <boot dev="hd" />
+    <bios useserial='yes'/>
+  </os>
+  <features>
+    <acpi/>
+  </features>
+  <clock offset='utc'/>
+  <devices>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/var/lib/libvirt/images/{{ disk_image }}'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+    <disk type='file' device='disk'>
+      <source file='/var/lib/libvirt/images/{{ metadata_image }}'/>
+      <target dev='vdb' bus='virtio'/>
+    </disk>
+    <interface type='bridge'>
+      <source bridge='br0'/>
+      <model type='virtio'/>
+      <mac address='{{ mac_address }}'/>
+    </interface>
+    <serial type='file'>
+      <source path='/tmp/{{name}}-vm.log'/>
+      <target port='0'/>
+    </serial>
+    <serial type='pty'>
+      <target port='1'/>
+    </serial>
+    <console type='file'>
+      <source path='/tmp/{{name}}-vm.log'/>
+      <target type='serial' port='0'/>
+    </console>
+  </devices>
+</domain>
