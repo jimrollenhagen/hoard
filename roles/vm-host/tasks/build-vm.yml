@@ -56,3 +56,8 @@
   become: yes
   become_method: sudo
   virt: name={{ name }} state=running
+
+- name: Start VM at boot
+  become: yes
+  become_method: sudo
+  virt: name={{ name }} command=autostart

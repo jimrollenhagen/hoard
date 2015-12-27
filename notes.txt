@@ -37,8 +37,6 @@ firewalls?
 backup all the things!
 monitoring
 
-make VMs start at boot
-
 
 
 NOTES
