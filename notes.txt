@@ -31,7 +31,6 @@ plex install
 subsonic install
 nginx install
   index page
-  ssl
   figure out auth for all this
 firewalls?
 backup all the things!
