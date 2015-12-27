@@ -3,3 +3,31 @@
   hostname: name=sonarr.jroll.io
   become: yes
   become_method: sudo
+
+# NOTE(jroll): ignore errors as it looks like the key is imported but
+# ansible fails to validate it (problem with subkeys maybe?)
+- name: Add sonarr apt key
+  apt_key: keyserver=keyserver.ubuntu.com id=FDA5DFFC
+  become: yes
+  become_method: sudo
+  ignore_errors: yes
+
+- name: Add sonarr apt repo
+  apt_repository: repo="deb http://apt.sonarr.tv/ master main" state=present
+  become: yes
+  become_method: sudo
+
+- name: Install sonarr
+  apt: name=nzbdrone update_cache=yes
+  become: yes
+  become_method: sudo
+
+- name: Install sonarr upstart script
+  template: src=upstart dest=/etc/init/sonarr.conf
+  become: yes
+  become_method: sudo
+
+- name: Run sonarr
+  service: name=sonarr state=started enabled=yes
+  become: yes
+  become_method: sudo

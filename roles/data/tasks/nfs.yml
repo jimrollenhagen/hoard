@@ -3,6 +3,13 @@
   dnf: name=nfs-utils state=latest
   become: yes
   become_method: sudo
+  when: ansible_distribution == "Fedora"
+
+- name: install nfs client
+  apt: name=nfs-common state=latest
+  become: yes
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
 
 - name: ensure /data/exists
   file: path=/data state=directory

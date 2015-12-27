@@ -5,8 +5,3 @@
     - data
     - vm-host
     - sonarr-host
-
-- hosts: sonarr
-  roles:
-    - common
-    - sonarr-guest

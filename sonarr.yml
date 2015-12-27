@@ -1,0 +1,6 @@
+---
+- hosts: sonarr
+  roles:
+    - common
+    - data
+    - sonarr-guest
