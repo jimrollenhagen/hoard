@@ -31,10 +31,15 @@
     owner: jim
     mode: 0600
 
-- name: ensure UTC
+- name: Check if time zone is UTC
+  shell: 'timedatectl status | grep "Time zone: UTC"'
+  register: is_utc
+
+- name: Set time zone to UTC
   become: yes
   become_method: sudo
   shell: timedatectl set-timezone UTC
+  when: "is_utc.rc != 0"
 
 - name: upgrade all packages
   dnf: name=* state=latest
