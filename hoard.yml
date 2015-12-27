@@ -5,3 +5,4 @@
     - data
     - vm-host
     - sonarr-host
+    - nginx-host

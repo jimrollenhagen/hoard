@@ -3,3 +3,6 @@ hoard.jroll.io ansible_ssh_user=jim
 
 [sonarr]
 sonarr.jroll.io ansible_ssh_user=jim
+
+[nginx]
+nginx.jroll.io ansible_ssh_user=jim
