@@ -1,0 +1,81 @@
+---
+- name: Generate new diffie-hellman parameters
+  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096 creates=/etc/ssl/certs/dhparam.pem
+  become: yes
+  become_method: sudo
+  notify: restart nginx
+
+- name: Clone simp_le
+  become: yes
+  become_method: sudo
+  git:
+    repo: https://github.com/kuba/simp_le
+    dest: /opt/simp_le
+
+- name: Bootstrap simp_le
+  become: yes
+  become_method: sudo
+  shell: bash /opt/simp_le/bootstrap.sh
+
+- name: Install simp_le dependencies
+  become: yes
+  become_method: sudo
+  pip: name={{ item }} virtualenv=/opt/simp_le/venv extra_args="-U"
+  with_items:
+    - setuptools
+    - pip
+    - wheel
+
+- name: Install simp_le
+  become: yes
+  become_method: sudo
+  pip: name=/opt/simp_le virtualenv=/opt/simp_le/venv extra_args="-U"
+
+- name: Ensure cert directories
+  file: name=/etc/nginx/ssl/{{ item.domain }} state=directory owner=root mode=0700
+  become: yes
+  become_method: sudo
+  with_items: "{{ domains }}"
+
+- name: Ensure web root
+  file: name={{ item.root }} state=directory owner=root mode=0755
+  become: yes
+  become_method: sudo
+  with_items: "{{ domains }}"
+
+- name: Generate ssl certificates
+  become: yes
+  become_method: sudo
+  command: chdir=/etc/nginx/ssl/{{ item.domain }} /opt/simp_le/venv/bin/simp_le --email jim@jimrollenhagen.com -f account_key.json -f key.pem -f cert.pem -f fullchain.pem -d {{ item.domain }}:{{ item.root }} creates=/etc/nginx/ssl/{{ item.domain }}/key.pem
+  with_items: "{{ domains }}"
+
+- name: Add renewals to crontab
+  become: yes
+  become_method: sudo
+  cron:
+    name="renew certificates for {{ item.domain }}"
+    job="cd /etc/nginx/ssl/{{ item.domain }} && /opt/simp_le/venv/bin/simp_le -d {{ item.domain }}:{{ item.root }} --email jim@jimrollenhagen.com -f account_key.json -f fullchain.pem -f cert.pem -f key.pem && service nginx restart"
+    month="*/1"
+  with_items: "{{ domains }}"
+
+- name: Disable default nginx config
+  become: yes
+  become_method: sudo
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify: restart nginx
+
+- name: Add jroll.io site config
+  become: yes
+  become_method: sudo
+  template:
+    src: site-jroll.io
+    dest: /etc/nginx/sites-available/jroll.io
+    owner: root
+    mode: 0644
+  notify: restart nginx
+
+- name: Enable jroll.io
+  become: yes
+  become_method: sudo
+  file: path=/etc/nginx/sites-enabled/jroll.io src=/etc/nginx/sites-available/jroll.io state=link
+  notify: restart nginx

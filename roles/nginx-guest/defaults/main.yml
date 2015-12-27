@@ -1,0 +1,6 @@
+---
+domains:
+  - domain: jroll.io
+    root: /usr/share/nginx/html
+  - domain: www.jroll.io
+    root: /usr/share/nginx/html
