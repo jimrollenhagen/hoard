@@ -16,6 +16,34 @@ pre-ansible?
       TYPE=Bridge
     systemctl restart network
 
+TODO
+====
+
+rtorrent install
+  can basically use existing config
+  /data/hoard/{complete,watch,incomplete}/{tv,music,movies}
+  /data/hoard/{music,tv,movies}
+  ^ maybe rearrange this a bit, need to play with it
+
+couch potato install
+headphones install
+plex install
+subsonic install
+nginx install
+  index page
+  ssl
+  figure out auth for all this
+firewalls?
+backup all the things!
+monitoring
+
+make VMs start at boot
+
+
+
+NOTES
+=====
+
 sonarr
   mono
   sqlite
@@ -23,6 +51,12 @@ sonarr
   uses torrent client API
   hardlinks files when complete
   https://github.com/Sonarr/Sonarr/wiki
+  db at ~/.config/NzbDrone/nzbdrone.db
+    indexers in db, mostly json
+  logs at ~/.config/NzbDrone/logs.db
+    also /var/log/upstart/sonarr.log
+  config at ~/.config/NzbDrone/config.xml
+
 
 couch potato
   python
