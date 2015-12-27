@@ -24,3 +24,36 @@
   shell: gpg --import /tmp/ubuntu-gpg-key.asc
 
 - include: storage.yml
+
+- name: Download ubuntu 14.04 checksum
+  become: yes
+  become_method: sudo
+  get_url:
+    url: https://cloud-images.ubuntu.com/trusty/current/SHA256SUMS
+    dest: /var/lib/libvirt/images/ubuntu-sha256
+
+- name: Download ubuntu 14.04 signature
+  become: yes
+  become_method: sudo
+  get_url:
+    url: https://cloud-images.ubuntu.com/trusty/current/SHA256SUMS.gpg
+    dest: /var/lib/libvirt/images/ubuntu-sha256.gpg
+
+- name: Verify checksum signature
+  become: yes
+  become_method: sudo
+  shell: gpg --verify /var/lib/libvirt/images/ubuntu-sha256.gpg /var/lib/libvirt/images/ubuntu-sha256
+
+- name: Get checksum for image
+  become: yes
+  become_method: sudo
+  shell: grep 'trusty-server-cloudimg-amd64-disk1.img' /var/lib/libvirt/images/ubuntu-sha256 | awk '{print $1;}'
+  register: ubuntu_checksum
+
+- name: Download ubuntu 14.04 cloud image
+  become: yes
+  become_method: sudo
+  get_url:
+    url: https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
+    dest: /var/lib/libvirt/images/trusty-server-cloudimg-amd64-disk1.img
+    sha256sum: "{{ ubuntu_checksum.stdout }}"

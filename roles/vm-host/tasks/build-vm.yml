@@ -1,0 +1,58 @@
+---
+- debug: msg="set up VM for {{ name }}"
+
+- name: Check if guest image exists
+  shell: ls /var/lib/libvirt/images/{{ name }}-guest.img
+  register: vm_exists
+  ignore_errors: yes
+
+- name: Create guest image
+  when: "vm_exists.rc != 0"
+  shell: qemu-img create -f qcow2 -b /var/lib/libvirt/images/trusty-server-cloudimg-amd64-disk1.img /var/lib/libvirt/images/{{ name }}-guest.img
+  become: yes
+  become_method: sudo
+
+- name: Resize guest image
+  when: "vm_exists.rc != 0"
+  shell: qemu-img resize /var/lib/libvirt/images/{{ name }}-guest.img {{ disk_size }}
+  become: yes
+  become_method: sudo
+
+- name: Check if cloud-config iso exists
+  shell: ls /var/lib/libvirt/images/{{ name }}-config.iso
+  register: vm_config_exists
+  ignore_errors: yes
+
+- name: Create user-data
+  when: "vm_config_exists.rc != 0"
+  become: yes
+  become_method: sudo
+  template:
+    src: cloud-config.txt
+    dest: /var/lib/libvirt/images/user-data
+
+# NOTE(jroll) meta-data is required for cloud-init, but we don't need it
+- name: Create meta-data
+  when: "vm_config_exists.rc != 0"
+  become: yes
+  become_method: sudo
+  file: path=/var/lib/libvirt/images/meta-data state=touch
+
+- name: Create cloud-config iso
+  when: "vm_config_exists.rc != 0"
+  become: yes
+  become_method: sudo
+  shell: cd /var/lib/libvirt/images && genisoimage -output {{ name }}-config.iso -volid cidata -joliet -rock user-data meta-data
+
+- name: Define VM in libvirt
+  become: yes
+  become_method: sudo
+  virt:
+    name: "{{ name }}"
+    command: define
+    xml: "{{ lookup('template', '../templates/vm.xml') }}"
+
+- name: Start VM
+  become: yes
+  become_method: sudo
+  virt: name={{ name }} state=running

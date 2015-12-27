@@ -1,97 +1,11 @@
 ---
-- name: Download ubuntu 14.04 checksum
-  become: yes
-  become_method: sudo
-  get_url:
-    url: https://cloud-images.ubuntu.com/trusty/current/SHA256SUMS
-    dest: /var/lib/libvirt/images/ubuntu-sha256
 
-- name: Download ubuntu 14.04 signature
-  become: yes
-  become_method: sudo
-  get_url:
-    url: https://cloud-images.ubuntu.com/trusty/current/SHA256SUMS.gpg
-    dest: /var/lib/libvirt/images/ubuntu-sha256.gpg
-
-- name: Verify checksum signature
-  become: yes
-  become_method: sudo
-  shell: gpg --verify /var/lib/libvirt/images/ubuntu-sha256.gpg /var/lib/libvirt/images/ubuntu-sha256
-
-- name: Get checksum for image
-  become: yes
-  become_method: sudo
-  shell: grep 'trusty-server-cloudimg-amd64-disk1.img' /var/lib/libvirt/images/ubuntu-sha256 | awk '{print $1;}'
-  register: ubuntu_checksum
-
-- name: Download ubuntu 14.04 cloud image
-  become: yes
-  become_method: sudo
-  get_url:
-    url: https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
-    dest: /var/lib/libvirt/images/trusty-server-cloudimg-amd64-disk1.img
-    sha256sum: "{{ ubuntu_checksum.stdout }}"
-
-- name: Check if sonarr guest image exists
-  shell: ls /var/lib/libvirt/images/sonarr-guest.img
-  register: sonarr_exists
-  ignore_errors: yes
-
-- name: Create sonarr guest image
-  when: "sonarr_exists.rc != 0"
-  shell: qemu-img create -f qcow2 -b /var/lib/libvirt/images/trusty-server-cloudimg-amd64-disk1.img /var/lib/libvirt/images/sonarr-guest.img
-  become: yes
-  become_method: sudo
-
-- name: Resize sonarr guest image
-  when: "sonarr_exists.rc != 0"
-  shell: qemu-img resize /var/lib/libvirt/images/sonarr-guest.img 20G
-  become: yes
-  become_method: sudo
-
-- name: Check if sonarr cloud-config iso exists
-  shell: ls /var/lib/libvirt/images/sonarr-config.iso
-  register: sonarr_config_exists
-  ignore_errors: yes
-
-- name: Create sonarr user-data
-  when: "sonarr_config_exists.rc != 0"
-  become: yes
-  become_method: sudo
-  template:
-    src: ../../vm-host/templates/cloud-config.txt
-    dest: /var/lib/libvirt/images/user-data
-
-- name: Create sonarr meta-data
-  when: "sonarr_config_exists.rc != 0"
-  become: yes
-  become_method: sudo
-  file: path=/var/lib/libvirt/images/meta-data state=touch
-
-- name: Create sonarr cloud-config iso
-  when: "sonarr_config_exists.rc != 0"
-  become: yes
-  become_method: sudo
-  shell: cd /var/lib/libvirt/images && genisoimage -output sonarr-config.iso -volid cidata -joliet -rock user-data meta-data
-
-- name: Set sonarr VM facts
-  set_fact:
+- include: ../../vm-host/tasks/build-vm.yml
+  vars:
     name: sonarr
     memory_mb: 1024
     cpus: 1
+    disk_size: 20G
     disk_image: sonarr-guest.img
     metadata_image: sonarr-config.iso
     mac_address: de:ad:be:ef:db:57
-
-- name: Define sonarr VM in libvirt
-  become: yes
-  become_method: sudo
-  virt:
-    name: sonarr
-    command: define
-    xml: "{{ lookup('template', '../../vm-host/templates/vm.xml') }}"
-
-- name: Start sonarr VM
-  become: yes
-  become_method: sudo
-  virt: name=sonarr state=running
