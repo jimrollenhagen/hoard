@@ -97,3 +97,19 @@
   become_method: sudo
   file: path=/etc/nginx/sites-enabled/s.jroll.io src=/etc/nginx/sites-available/s.jroll.io state=link
   notify: restart nginx
+
+- name: Add tv.jroll.io site config
+  become: yes
+  become_method: sudo
+  template:
+    src: site-tv.jroll.io
+    dest: /etc/nginx/sites-available/tv.jroll.io
+    owner: root
+    mode: 0644
+  notify: restart nginx
+
+- name: Enable tv.jroll.io
+  become: yes
+  become_method: sudo
+  file: path=/etc/nginx/sites-enabled/tv.jroll.io src=/etc/nginx/sites-available/tv.jroll.io state=link
+  notify: restart nginx
