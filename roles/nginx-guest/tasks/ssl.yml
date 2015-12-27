@@ -43,6 +43,8 @@
   become_method: sudo
   with_items: "{{ domains }}"
 
+# TODO(jroll) fix the ordering here, challenges fail if the site isn't
+# manually set up with the proper root ahead of time.
 - name: Generate ssl certificates
   become: yes
   become_method: sudo
@@ -78,4 +80,20 @@
   become: yes
   become_method: sudo
   file: path=/etc/nginx/sites-enabled/jroll.io src=/etc/nginx/sites-available/jroll.io state=link
+  notify: restart nginx
+
+- name: Add s.jroll.io site config
+  become: yes
+  become_method: sudo
+  template:
+    src: site-s.jroll.io
+    dest: /etc/nginx/sites-available/s.jroll.io
+    owner: root
+    mode: 0644
+  notify: restart nginx
+
+- name: Enable s.jroll.io
+  become: yes
+  become_method: sudo
+  file: path=/etc/nginx/sites-enabled/s.jroll.io src=/etc/nginx/sites-available/s.jroll.io state=link
   notify: restart nginx
