@@ -6,3 +6,6 @@ sonarr.jroll.io ansible_ssh_user=jim
 
 [nginx]
 nginx.jroll.io ansible_ssh_user=jim
+
+[torrent]
+torrent.jroll.io ansible_ssh_user=jim

@@ -1,0 +1,45 @@
+---
+- name: Set hostname
+  hostname: name=torrent.jroll.io
+  become: yes
+  become_method: sudo
+
+- name: Ensure torrent directory
+  file: path=/data/hoard/torrent state=directory owner=jim mode=0755
+
+- name: Ensure rtorrent session directory
+  file: path=/data/hoard/torrent/.session state=directory owner=jim mode=0755
+
+- name: Ensure directories used by rtorrent
+  file: path={{ item }} state=directory owner=jim mode=0755
+  with_items:
+    - /data/hoard/torrent/incomplete
+    - /data/hoard/torrent/watch
+    - /data/hoard/torrent/watch/tv
+    - /data/hoard/torrent/complete
+    - /data/hoard/torrent/complete/tv
+    - /data/hoard/tv-import
+    - /data/hoard/tv
+
+- name: Add torrent completion script
+  become: yes
+  become_method: sudo
+  template: src=torrent-complete.bash dest=/opt/torrent-complete.bash owner=jim mode=0755
+
+- name: Install rtorrent
+  become: yes
+  become_method: sudo
+  apt: name=rtorrent state=latest
+
+- name: Drop in rtorrent config
+  template: src=rtorrent.rc dest=/home/jim/.rtorrent.rc
+  notify: restart rtorrent
+
+- name: Add rtorrent init script
+  become: yes
+  become_method: sudo
+  template: src=rtorrent.init dest=/etc/init.d/rtorrent owner=root mode=0755
+  notify: restart rtorrent
+
+- name: Start rtorrent
+  service: name=rtorrent state=started

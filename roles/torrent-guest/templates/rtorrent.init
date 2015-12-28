@@ -1,0 +1,23 @@
+#! /bin/sh
+# rTorrent init script
+#
+
+case "$1" in
+  start)
+    echo "Starting rtorrent..."
+    sudo -u jim screen -dmS rtorrent rtorrent
+    ;;
+  stop)
+    echo "Stopping rtorrent..."
+    killall -s 2 rtorrent
+    ;;
+  restart|force-reload)
+    "$0" stop
+    sleep 1
+    "$0" start
+        ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac

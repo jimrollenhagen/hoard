@@ -1,0 +1,11 @@
+---
+
+- include: ../../vm-host/tasks/build-vm.yml
+  vars:
+    name: torrent
+    memory_mb: 2048
+    cpus: 1
+    disk_size: 20G
+    disk_image: torrent-guest.img
+    metadata_image: torrent-config.iso
+    mac_address: de:ad:be:ef:db:59
