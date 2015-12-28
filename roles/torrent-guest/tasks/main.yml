@@ -16,10 +16,14 @@
     - /data/hoard/torrent/incomplete
     - /data/hoard/torrent/watch
     - /data/hoard/torrent/watch/tv
+    - /data/hoard/torrent/watch/movies
     - /data/hoard/torrent/complete
     - /data/hoard/torrent/complete/tv
+    - /data/hoard/torrent/complete/movies
     - /data/hoard/tv-import
+    - /data/hoard/movies-import
     - /data/hoard/tv
+    - /data/hoard/movies
 
 - name: Add torrent completion script
   become: yes

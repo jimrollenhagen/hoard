@@ -1,0 +1,35 @@
+---
+- name: Set hostname
+  hostname: name=couchpotato.jroll.io
+  become: yes
+  become_method: sudo
+
+- name: Download couchpotato
+  become: yes
+  become_method: sudo
+  git:
+    repo: https://github.com/RuudBurger/CouchPotatoServer.git
+    dest: /opt/couchpotato
+
+- name: Install init script
+  become: yes
+  become_method: sudo
+  template:
+    src: couchpotato-init
+    dest: /etc/init.d/couchpotato
+    owner: root
+    mode: 0755
+
+- name: Install defaults file
+  become: yes
+  become_method: sudo
+  template:
+    src: couchpotato-defaults
+    dest: /etc/default/couchpotato
+    owner: root
+    mode: 0644
+
+- name: Run couchpotato
+  become: yes
+  become_method: sudo
+  service: name=couchpotato state=started

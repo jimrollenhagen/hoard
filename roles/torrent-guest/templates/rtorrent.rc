@@ -109,4 +109,5 @@ peer_exchange = no
 #hash_max_tries = 10
 
 schedule = watch_directory_tv,10,10,"load_start=/data/hoard/torrent/watch/tv/*.torrent,d.set_custom1=/data/hoard/torrent/complete/tv/,d.set_custom2=/data/hoard/tv-import/"
+schedule = watch_directory_movies,10,10,"load_start=/data/hoard/torrent/watch/movies/*.torrent,d.set_custom1=/data/hoard/torrent/complete/movies/,d.set_custom2=/data/hoard/movies-import/"
 system.method.set_key =event.download.finished,link_complete,"d.set_directory=$d.get_custom1= ;execute=/opt/torrent-complete.bash,$d.get_base_path=,$d.get_custom1=,$d.get_custom2="

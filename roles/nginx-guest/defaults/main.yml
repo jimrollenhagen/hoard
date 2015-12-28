@@ -10,3 +10,5 @@ domains:
 # currently running over letsencrypt rate limits
 #  - domain: tv.jroll.io
 #    root: /usr/share/nginx/tv.jroll.io
+#  - domain: movies.jroll.io
+#    root: /usr/share/nginx/movies.jroll.io

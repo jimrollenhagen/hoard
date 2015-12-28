@@ -1,0 +1,6 @@
+---
+- hosts: couchpotato
+  roles:
+    - common
+    - data
+    - couchpotato-guest

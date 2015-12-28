@@ -7,3 +7,4 @@
     - sonarr-host
     - nginx-host
     - torrent-host
+    - couchpotato-host

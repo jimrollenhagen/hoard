@@ -1,0 +1,11 @@
+---
+
+- include: ../../vm-host/tasks/build-vm.yml
+  vars:
+    name: couchpotato
+    memory_mb: 1024
+    cpus: 1
+    disk_size: 20G
+    disk_image: couchpotato-guest.img
+    metadata_image: couchpotato-config.iso
+    mac_address: de:ad:be:ef:db:60
