@@ -32,4 +32,4 @@
 - name: Run couchpotato
   become: yes
   become_method: sudo
-  service: name=couchpotato state=started
+  service: name=couchpotato state=started enabled=yes
