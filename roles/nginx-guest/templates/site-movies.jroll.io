@@ -11,15 +11,12 @@ server {
   access_log /var/log/nginx/movies.jroll.io.access.log;
   error_log /var/log/nginx/movies.jroll.io.error.log;
 
-  #ssl_certificate /etc/nginx/ssl/movies.jroll.io/cert.pem;
-  #ssl_certificate_key /etc/nginx/ssl/movies.jroll.io/key.pem;
-  ssl_certificate /etc/nginx/ssl/jroll.io/cert.pem;
-  ssl_certificate_key /etc/nginx/ssl/jroll.io/key.pem;
+  ssl_certificate /etc/nginx/ssl/movies.jroll.io/cert.pem;
+  ssl_certificate_key /etc/nginx/ssl/movies.jroll.io/key.pem;
 
   ssl_stapling on;
   ssl_stapling_verify on;
-  #ssl_trusted_certificate /etc/nginx/ssl/movies.jroll.io/fullchain.pem;
-  ssl_trusted_certificate /etc/nginx/ssl/jroll.io/fullchain.pem;
+  ssl_trusted_certificate /etc/nginx/ssl/movies.jroll.io/fullchain.pem;
 
   ssl_session_cache shared:SSL:1m;
   ssl_session_timeout 1440m;

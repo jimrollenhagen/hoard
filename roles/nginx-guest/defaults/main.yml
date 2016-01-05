@@ -6,9 +6,7 @@ domains:
     root: /usr/share/nginx/html
   - domain: s.jroll.io
     root: /usr/share/nginx/s.jroll.io
-# TODO(jroll) add this in and use generated certs
-# currently running over letsencrypt rate limits
-#  - domain: tv.jroll.io
-#    root: /usr/share/nginx/tv.jroll.io
-#  - domain: movies.jroll.io
-#    root: /usr/share/nginx/movies.jroll.io
+  - domain: tv.jroll.io
+    root: /usr/share/nginx/tv.jroll.io
+  - domain: movies.jroll.io
+    root: /usr/share/nginx/movies.jroll.io
